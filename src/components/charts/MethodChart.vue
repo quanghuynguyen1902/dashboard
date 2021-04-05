@@ -41,7 +41,7 @@
 import axios from "axios";
 import Api from "@/constants/backendApi";
 export default {
-  name: "Method chart",
+  name: "MethodChart",
   data() {
     return {
       total: 0,

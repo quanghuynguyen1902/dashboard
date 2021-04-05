@@ -5,7 +5,7 @@ const api = {
   DASHBOARD_FILTER: "http://127.0.0.1:8000/api/requests-data/filter/",
   USERS: "http://127.0.0.1:8000/api/requests-data/users/",
   CATEGORIES: "/categories/",
-  USER_DETAILS: "/users/:slug/",
+  USER_DETAILS: "http://127.0.0.1:8000/api/requests-data/user-detail/",
   EDIT_USER: "/users/:slug/edit/",
   REQUESTS_ANALYTIC: "http://127.0.0.1:8000/api/requests-data/request-analytic/"
 };
