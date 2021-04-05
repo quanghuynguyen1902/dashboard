@@ -3,6 +3,7 @@ import VueRouter from "vue-router";
 import Paths from "@/constants/paths";
 import Container from "@/Container/Container";
 import Dashboard from "@/views/Dashboard";
+import Users from "@/views/Users";
 import UserDetail from "@/views/UserDetail";
 Vue.use(VueRouter);
 
@@ -20,8 +21,9 @@ const routes = [
       {
         path: Paths.USERS,
         name: "Users",
-        component: UserDetail
-      }
+        component: Users
+      },
+      { path: Paths.USER_DETAILS, component: UserDetail }
     ]
   }
 ];

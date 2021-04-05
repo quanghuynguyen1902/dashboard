@@ -37,10 +37,10 @@ export default {
   nav,
   computed: {
     show() {
-      return this.$store.state.sidebarShow;
+      return this.$store.state.core.sidebarShow;
     },
     minimize() {
-      return this.$store.state.sidebarMinimize;
+      return this.$store.state.core.sidebarMinimize;
     }
   }
 };

@@ -1,8 +1,9 @@
 import Vue from "vue";
 import App from "./App.vue";
 import "@/plugins/coreui.js";
+import "@/plugins/paginate.js";
 import router from "./router";
-import store from "./store/store";
+import store from "./store/index";
 import { iconsSet as icons } from "./assets/icons/icons.js";
 Vue.config.productionTip = false;
 

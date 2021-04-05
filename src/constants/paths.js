@@ -6,9 +6,9 @@ const paths = {
   EDIT_DOCUMENTS: "/documents/:slug/edit/",
   CATEGORIES: "/categories/",
   USERS: "/users",
-  USER_DETAILS: "/users/:slug/",
+  USER_DETAILS: "/users/:user_id",
   EDIT_USER: "/users/:slug/edit/",
-  COLLECTIONS: "/collections/"
+  REQUESTS_ANALYTIC: "/collections/"
 };
 
 export default paths;

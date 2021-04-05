@@ -37,18 +37,16 @@
 
           <CCardBody>
             <CDataTable
-              :items="items"
+              :items="changeData"
               :fields="fields"
-              items-per-page-select
               :items-per-page="10"
               hover
               sorter
-              pagination
             >
-              <template #status="{item}">
+              <template #request_method="{item}">
                 <td>
-                  <CBadge :color="getBadge(item.status)">
-                    {{ item.status }}
+                  <CBadge :color="getBadge(item.request_method)">
+                    {{ item.request_method }}
                   </CBadge>
                 </td>
               </template>
@@ -74,6 +72,13 @@
                 </CCollapse>
               </template>
             </CDataTable>
+            <CPagination
+              :activePage.sync="page"
+              :pages="totalpage"
+              size="sm"
+              align="center"
+              @update:activePage="getResultPage(page)"
+            />
           </CCardBody>
         </CCard>
       </CCol>
@@ -82,178 +87,28 @@
 </template>
 
 <script>
-const items = [
-  {
-    username: "Samppa Nori",
-    registered: "2012/01/01",
-    role: "Member",
-    status: "Active"
-  },
-  {
-    username: "Estavan Lykos",
-    registered: "2012/02/01",
-    role: "Staff",
-    status: "Banned"
-  },
-  {
-    username: "Chetan Mohamed",
-    registered: "2012/02/01",
-    role: "Admin",
-    status: "Inactive"
-  },
-  {
-    username: "Derick Maximinus",
-    registered: "2012/03/01",
-    role: "Member",
-    status: "Pending"
-  },
-  {
-    username: "Friderik Dávid",
-    registered: "2012/01/21",
-    role: "Staff",
-    status: "Active"
-  },
-  {
-    username: "Yiorgos Avraamu",
-    registered: "2012/01/01",
-    role: "Member",
-    status: "Active"
-  },
-  {
-    username: "Avram Tarasios",
-    registered: "2012/02/01",
-    role: "Staff",
-    status: "Banned"
-  },
-  {
-    username: "Quintin Ed",
-    registered: "2012/02/01",
-    role: "Admin",
-    status: "Inactive"
-  },
-  {
-    username: "Enéas Kwadwo",
-    registered: "2012/03/01",
-    role: "Member",
-    status: "Pending"
-  },
-  {
-    username: "Agapetus Tadeáš",
-    registered: "2012/01/21",
-    role: "Staff",
-    status: "Active"
-  },
-  {
-    username: "Carwyn Fachtna",
-    registered: "2012/01/01",
-    role: "Member",
-    status: "Active"
-  },
-  {
-    username: "Nehemiah Tatius",
-    registered: "2012/02/01",
-    role: "Staff",
-    status: "Banned"
-  },
-  {
-    username: "Ebbe Gemariah",
-    registered: "2012/02/01",
-    role: "Admin",
-    status: "Inactive"
-  },
-  {
-    username: "Eustorgios Amulius",
-    registered: "2012/03/01",
-    role: "Member",
-    status: "Pending"
-  },
-  {
-    username: "Leopold Gáspár",
-    registered: "2012/01/21",
-    role: "Staff",
-    status: "Active"
-  },
-  {
-    username: "Pompeius René",
-    registered: "2012/01/01",
-    role: "Member",
-    status: "Active"
-  },
-  {
-    username: "Paĉjo Jadon",
-    registered: "2012/02/01",
-    role: "Staff",
-    status: "Banned"
-  },
-  {
-    username: "Micheal Mercurius",
-    registered: "2012/02/01",
-    role: "Admin",
-    status: "Inactive"
-  },
-  {
-    username: "Ganesha Dubhghall",
-    registered: "2012/03/01",
-    role: "Member",
-    status: "Pending"
-  },
-  {
-    username: "Hiroto Šimun",
-    registered: "2012/01/21",
-    role: "Staff",
-    status: "Active"
-  },
-  {
-    username: "Vishnu Serghei",
-    registered: "2012/01/01",
-    role: "Member",
-    status: "Active"
-  },
-  {
-    username: "Zbyněk Phoibos",
-    registered: "2012/02/01",
-    role: "Staff",
-    status: "Banned"
-  },
-  {
-    username: "Einar Randall",
-    registered: "2012/02/01",
-    role: "Admin",
-    status: "Inactive"
-  },
-  {
-    username: "Félix Troels",
-    registered: "2012/03/21",
-    role: "Staff",
-    status: "Active"
-  },
-  {
-    username: "Aulus Agmundr",
-    registered: "2012/01/01",
-    role: "Member",
-    status: "Pending"
-  }
-];
-
+import axios from "axios";
 import FilterComponent from "@/components/FilterComponent";
 import DetailRequest from "@/components/DetailRequest";
+import Api from "@/constants/backendApi";
+import { mapGetters } from "vuex";
 export default {
   name: "Dashboard",
   components: {
     FilterComponent,
     DetailRequest
   },
+  mounted() {
+    this.getData();
+  },
   data() {
     return {
       openFilter: false,
       collapseDuration: 0,
-      items: items.map((item, id) => {
-        return { ...item, id };
-      }),
       fields: [
-        { key: "username" },
-        { key: "registered" },
-        { key: "role" },
+        { key: "user_id" },
+        { key: "url" },
+        { key: "request_method" },
         { key: "status" },
         {
           key: "show_details",
@@ -262,39 +117,108 @@ export default {
           sorter: false,
           filter: false
         }
-      ]
+      ],
+      data: [],
+      page: 1,
+      totalpage: 1
     };
   },
+
+  computed: {
+    ...mapGetters(["getMethod", "getUserId", "getUrl", "getTime"]),
+    changeData() {
+      return this.data;
+    }
+  },
+  watch: {
+    $route(to, from) {
+      if (to !== from) {
+        location.reload();
+      }
+    }
+  },
   methods: {
-    filterFuntion() {
-      this.openFilter = false;
+    async getData() {
+      let response = "";
+      this.page = parseInt(this.$route.query.page) || 1;
+      if (this.$route.query.method) {
+        let query = `?method=${this.$route.query.method}&page=${this.page}`;
+        if (this.$route.query.user_id) {
+          this.$store.commit("setUserId", this.$route.query.user_id);
+          query += `&user_id=${this.$route.query.user_id}`;
+        }
+        if (this.$route.query.url) {
+          this.$store.commit("setUrl", this.$route.query.url);
+          query += `&url=${this.$route.query.url}`;
+        }
+        if (this.$route.query.time_from) {
+          this.$store.commit("setTime", this.$route.query.time_from);
+          query += `&time_from=${this.$route.query.time_from}`;
+        }
+        response = await axios.get(`${Api.DASHBOARD_FILTER}` + query);
+      } else {
+        response = await axios.get(`${Api.DASHBOARD}?page=${this.page}`);
+      }
+      this.totalpage = Math.ceil(response.data.counts / 10);
+      this.data = response.data.results.map((item, id) => {
+        if (!item.user_id) {
+          item.user_id = "Anonymous";
+        }
+        return { ...item, id };
+      });
     },
-    getBadge(status) {
-      switch (status) {
-        case "Active":
+    filterFuntion() {
+      this.page = 1;
+      const query = {};
+      query.method = this.getMethod;
+      query.page = this.page;
+      if (this.getUserId) {
+        query.user_id = this.getUserId;
+      }
+      if (this.getUrl) {
+        query.url = this.getUrl;
+      }
+      if (this.getTime) {
+        query.time_from = this.getTime;
+      }
+      this.$router.push({
+        name: "Dashboard",
+        query: query
+      });
+    },
+    getBadge(request_method) {
+      switch (request_method) {
+        case "GET":
           return "success";
-        case "Inactive":
+        case "OPTIONS":
           return "secondary";
-        case "Pending":
+        case "POST":
           return "warning";
-        case "Banned":
+        case "DELETE":
           return "danger";
         default:
           "primary";
       }
     },
     toggleDetails(item) {
-      this.$set(this.items[item.id], "_toggled", !item._toggled);
+      this.$set(this.data[item.id], "_toggled", !item._toggled);
       this.collapseDuration = 300;
       this.$nextTick(() => {
         this.collapseDuration = 0;
+      });
+    },
+    getResultPage(page) {
+      this.page = page;
+      this.$router.push({
+        path: this.$route.fullPath,
+        query: { page: this.page }
       });
     }
   }
 };
 </script>
 
-<style lang="scss">
+<style lang="css">
 .button-table {
   font-size: 25px;
   text-align: right;
