@@ -8,6 +8,7 @@
           <CContainer fluid>
             <transition name="fade" mode="out-in">
               <router-view :key="$route.path" />
+              <Intruction></Intruction>
             </transition>
           </CContainer>
         </main>
@@ -21,12 +22,14 @@
 import Sidebar from "@/components/Sidebar";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import Intruction from "@/components/Instruction";
 export default {
   name: "Container",
   components: {
     Sidebar,
     Navbar,
-    Footer
+    Footer,
+    Intruction
   }
 };
 </script>

@@ -25,7 +25,7 @@
                   Cancel
                 </CButton>
                 <CButton
-                  color="success"
+                  color="info"
                   class="ml-1 mr-1 float-right"
                   @click="filterFuntion"
                 >
@@ -87,11 +87,11 @@
 </template>
 
 <script>
-import axios from "axios";
 import FilterComponent from "@/components/FilterComponent";
 import DetailRequest from "@/components/DetailRequest";
 import Api from "@/constants/backendApi";
 import { mapGetters } from "vuex";
+import UserService from "../api/userService";
 export default {
   name: "Dashboard",
   components: {
@@ -99,6 +99,9 @@ export default {
     DetailRequest
   },
   mounted() {
+    if (!this.currentUser) {
+      this.$router.push("/login");
+    }
     this.getData();
   },
   data() {
@@ -123,11 +126,13 @@ export default {
       totalpage: 1
     };
   },
-
   computed: {
     ...mapGetters(["getMethod", "getUserId", "getUrl", "getTime"]),
     changeData() {
       return this.data;
+    },
+    currentUser() {
+      return this.$store.state.auth.user;
     }
   },
   watch: {
@@ -155,9 +160,13 @@ export default {
           this.$store.commit("setTime", this.$route.query.time_from);
           query += `&time_from=${this.$route.query.time_from}`;
         }
-        response = await axios.get(`${Api.DASHBOARD_FILTER}` + query);
+        response = await UserService.getUserBoard(
+          `${Api.DASHBOARD_FILTER}` + query
+        );
       } else {
-        response = await axios.get(`${Api.DASHBOARD}?page=${this.page}`);
+        response = await UserService.getUserBoard(
+          `${Api.DASHBOARD}?page=${this.page}`
+        );
       }
       this.totalpage = Math.ceil(response.data.counts / 10);
       this.data = response.data.results.map((item, id) => {

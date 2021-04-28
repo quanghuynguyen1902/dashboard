@@ -21,14 +21,14 @@
             <span class="ml-auto font-weight-bold">
               {{ method.count }}
               <span class="text-muted small"
-                >{{ Math.round(method.count / total) * 100 }} %
+                >{{ (method.count / total).toFixed(2) * 100 }} %
               </span>
             </span>
           </div>
           <div class="progress-group-bars">
             <CProgress
               class="progress-xs"
-              :value="Math.round(method.count / total) * 100"
+              :value="(method.count / total).toFixed(2) * 100"
               color="success"
             />
           </div>
@@ -38,7 +38,7 @@
   </CRow>
 </template>
 <script>
-import axios from "axios";
+import UserService from "../../api/userService";
 import Api from "@/constants/backendApi";
 export default {
   name: "MethodChart",
@@ -53,10 +53,11 @@ export default {
   },
   methods: {
     async getData() {
-      const response = await axios.get(
+      const response = await UserService.getUserBoard(
         `${Api.REQUESTS_ANALYTIC}?user_id=${this.$route.params.user_id}`
       );
       this.total = response.data.total;
+      console.log(this.total);
       this.methods = response.data.methods;
     }
   }

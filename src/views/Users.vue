@@ -27,7 +27,7 @@
 
 <script>
 import Api from "@/constants/backendApi";
-import axios from "axios";
+import UserService from "../api/userService";
 export default {
   name: "Users",
   data() {
@@ -42,7 +42,7 @@ export default {
   },
   methods: {
     async get_users() {
-      const response = await axios.get(Api.USERS);
+      const response = await UserService.getUserBoard(Api.USERS);
       for (let key of response.data.keys) {
         this.fields.push({ key: key });
       }

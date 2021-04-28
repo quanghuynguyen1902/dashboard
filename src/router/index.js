@@ -5,6 +5,10 @@ import Container from "@/Container/Container";
 import Dashboard from "@/views/Dashboard";
 import Users from "@/views/Users";
 import UserDetail from "@/views/UserDetail";
+import Login from "@/views/Login";
+import Register from "@/views/Register";
+import Page404 from "@/views/Page404";
+import Information from "@/components/Information";
 Vue.use(VueRouter);
 
 const routes = [
@@ -23,14 +27,44 @@ const routes = [
         name: "Users",
         component: Users
       },
-      { path: Paths.USER_DETAILS, component: UserDetail }
+      { path: Paths.USER_DETAILS, component: UserDetail },
+      {
+        path: Paths.INFORMATION,
+        name: "Information",
+        component: Information
+      }
     ]
-  }
+  },
+  {
+    path: Paths.LOGIN,
+    name: "Login",
+    component: Login
+  },
+  {
+    path: Paths.REGISTER,
+    name: "Register",
+    component: Register
+  },
+  { path: "*", component: Page404 }
 ];
 
 const router = new VueRouter({
   mode: "history",
   routes
+});
+
+router.beforeEach((to, from, next) => {
+  const publicPages = ["/login", "/register"];
+  const authRequired = !publicPages.includes(to.path);
+  const loggedIn = localStorage.getItem("user");
+
+  // trying to access a restricted page + not logged in
+  // redirect to login page
+  if (authRequired && !loggedIn) {
+    next("/login");
+  } else {
+    next();
+  }
 });
 
 export default router;

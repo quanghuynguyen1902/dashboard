@@ -24,26 +24,11 @@
           Users
         </CHeaderNavLink>
       </CHeaderNavItem>
-      <CHeaderNavItem class="px-3">
-        <CHeaderNavLink>
-          Settings
-        </CHeaderNavLink>
-      </CHeaderNavItem>
     </CHeaderNav>
     <CHeaderNav class="mr-4">
       <CHeaderNavItem class="d-md-down-none mx-2">
         <CHeaderNavLink>
-          <CIcon name="cil-bell" />
-        </CHeaderNavLink>
-      </CHeaderNavItem>
-      <CHeaderNavItem class="d-md-down-none mx-2">
-        <CHeaderNavLink>
-          <CIcon name="cil-list" />
-        </CHeaderNavLink>
-      </CHeaderNavItem>
-      <CHeaderNavItem class="d-md-down-none mx-2">
-        <CHeaderNavLink>
-          <CIcon name="cil-envelope-open" />
+          <DropdownNotification></DropdownNotification>
         </CHeaderNavLink>
       </CHeaderNavItem>
       <DropdownAccount />
@@ -55,11 +40,13 @@
 </template>
 
 <script>
-import DropdownAccount from "./DropdwonAccount";
+import DropdownAccount from "./DropdownAccount";
+import DropdownNotification from "@/components/Notification/DropdownNotification";
 export default {
   name: "Navbar",
   components: {
-    DropdownAccount
+    DropdownAccount,
+    DropdownNotification
   }
 };
 </script>

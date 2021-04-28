@@ -43,7 +43,7 @@
   </CCardBody>
 </template>
 <script>
-import axios from "axios";
+import UserService from "../../api/userService";
 import Api from "@/constants/backendApi";
 import DetailRequest from "@/components/DetailRequest";
 export default {
@@ -92,7 +92,7 @@ export default {
       let response = "";
       this.page = parseInt(this.$route.query.page) || 1;
 
-      response = await axios.get(
+      response = await UserService.getUserBoard(
         `${Api.USER_DETAILS}?page=${this.page}&user_id=${this.$route.params.user_id}`
       );
 
